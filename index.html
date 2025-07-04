@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FDW Lookup</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="main-wrapper">
+
+    <!-- Header -->
+    <header class="header">
+      <h1>FDW <span>Lookup</span></h1>
+      <p class="subtitle">🔍 Recherche stylisée dans les dumps FiveM</p>
+    </header>
+
+    <!-- Zone centrale en grid -->
+    <div class="grid-container">
+
+      <!-- Recherche TXT -->
+      <div class="card glass">
+        <input type="text" id="search" placeholder="Entrez un ID, nom ou license...">
+        <button onclick="lookup()">📁 Rechercher</button>
+        <div id="result" class="result-box">📄 En attente d'une recherche...</div>
+      </div>
+
+      <!-- IP Lookup -->
+      <div class="card glass">
+        <input type="text" id="ipInput" placeholder="Entrez une adresse IP...">
+        <button onclick="lookupIP()">🌐 Rechercher IP</button>
+        <div id="ipResult" class="result-box">🌍 En attente d'une IP...</div>
+      </div>
+
+      <!-- Num Lookup -->
+      <div class="card glass">
+        <input type="text" id="numInput" placeholder="Entrez un numéro (avec indicatif)...">
+        <button onclick="lookupPhone()">📞 Rechercher Numéro</button>
+        <div id="numResult" class="result-box">📱 En attente d'un numéro...</div>
+      </div>
+
+    </div>
+
+    <!-- Liens -->
+    <div class="links">
+      <a href="https://discord.gg/fdwn" target="_blank">🌐 Rejoindre Discord</a>
+      <a href="https://discord.com/oauth2/authorize?client_id=1234567890&scope=bot" target="_blank">🤖 Inviter le bot</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      Déc. par <strong>x86.cocaine</strong> 💊
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

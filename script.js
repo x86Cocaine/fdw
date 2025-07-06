@@ -116,20 +116,40 @@ function lookupPhone() {
 function lookupEmail() {
   const email = document.getElementById("emailInput").value.trim();
   const box = document.getElementById("emailResult");
-  if (!email) return box.innerText = "⚠️ Entrez un email.";
+  if (!email || !email.includes("@") || !email.includes(".")) {
+    return box.innerText = "⚠️ Entrez un email valide (ex: exemple@mail.com).";
+  }
+
   box.innerText = "⏳ Vérification email...";
-  fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${API_KEYS.EMAIL}&email=${email}`)
-    .then(res => res.json())
-    .then(data => {
-      box.innerText = `📧 Résultat :
-- Valide : ${data.is_valid_format?.value ? "✅" : "❌"}
-- MX : ${data.mx_found ? "✅" : "❌"}
-- SMTP : ${data.is_smtp_valid?.value ? "✅" : "❌"}
-- Deliverable : ${data.deliverability || "?"}
-- Suggestion : ${data.autocorrect || "Aucune"}`;
+
+  fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${API_KEYS.EMAIL}&email=${encodeURIComponent(email)}`)
+    .then(res => {
+      if (!res.ok) throw new Error("Erreur serveur.");
+      return res.json();
     })
-    .catch(() => box.innerText = "❌ Erreur email.");
+    .then(data => {
+      if (!data || typeof data !== "object") {
+        throw new Error("Réponse invalide.");
+      }
+
+      const isValid = data.is_valid_format?.value ?? false;
+      const mxFound = data.mx_found ?? false;
+      const smtpValid = data.is_smtp_valid?.value ?? false;
+      const deliverable = data.deliverability || "Inconnu";
+      const suggestion = data.autocorrect || "Aucune";
+
+      box.innerText = `📧 Résultat :
+- Valide : ${isValid ? "✅" : "❌"}
+- MX : ${mxFound ? "✅" : "❌"}
+- SMTP : ${smtpValid ? "✅" : "❌"}
+- Deliverable : ${deliverable}
+- Suggestion : ${suggestion}`;
+    })
+    .catch((err) => {
+      box.innerText = `❌ Erreur email : ${err.message}`;
+    });
 }
+
 
 // 🏦 IBAN
 function lookupIBAN() {

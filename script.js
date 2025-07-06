@@ -142,3 +142,37 @@ function lookupVAT() {
     })
     .catch(() => box.innerText = "❌ Erreur TVA.");
 }
+function lookupUsername() {
+  const username = document.getElementById("userInput").value.trim();
+  const box = document.getElementById("userResult");
+  if (!username) return box.innerText = "⚠️ Entrez un pseudo.";
+  box.innerText = "⏳ Recherche pseudo...";
+
+  fetch(`https://api.naz.api/usercheck?username=${username}`) // à remplacer si tu as une autre API
+    .then(res => res.json())
+    .then(data => {
+      box.innerText = `👤 Résultat :
+- Trouvé sur : ${data.found_sites?.join(", ") || "❌ Aucun site trouvé"}`;
+    })
+    .catch(() => box.innerText = "❌ Erreur pseudo.");
+}
+function lookupNazAPI() {
+  const input = document.getElementById("nazInput").value.trim();
+  const box = document.getElementById("nazResult");
+  if (!input) return box.innerText = "⚠️ Entrez une donnée.";
+
+  box.innerText = "⏳ Analyse en cours...";
+
+  fetch(`https://api.naz.api/lookup?query=${encodeURIComponent(input)}`) // adapte si l’endpoint diffère
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        box.innerText = `🧠 Résultat NazAPI :
+- Type : ${data.type || "?"}
+- Infos trouvées :\n${data.result || "Aucune"}`;
+      } else {
+        box.innerText = "❌ Aucun résultat.";
+      }
+    })
+    .catch(() => box.innerText = "❌ Erreur NazAPI.");
+}

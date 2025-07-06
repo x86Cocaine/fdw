@@ -1,3 +1,4 @@
+// 🎯 FDW Lookup - Script Complet Final
 const API_KEYS = {
   IP: "57209cadb9454a5dbcb6041c93e7f99a",
   PHONE: "189ab069164d3d776aaa6b178c360425",
@@ -29,13 +30,14 @@ function showSection(id) {
   document.getElementById(id).style.display = 'flex';
 }
 
+// 🔍 Lookup FiveM
 function lookup() {
   const query = document.getElementById("search").value.trim();
   const resultBox = document.getElementById("result");
   if (!query) return resultBox.innerText = "⚠️ Merci d'entrer un terme valide.";
   resultBox.innerText = "⏳ Chargement fichiers...";
 
-  const baseURL = window.location.pathname.includes("/fdw") ? "/fdw/" : "./";
+  const baseURL = window.location.origin + "/fdw/";
 
   Promise.all([
     fetch(baseURL + "fivem_part1.txt").then(r => r.text()),
@@ -44,21 +46,26 @@ function lookup() {
     .then(([part1, part2]) => {
       const lines = (part1 + "\n" + part2).split("\n");
       const matches = lines.map((line, i) =>
-        line.toLowerCase().includes(query.toLowerCase()) ? `[Ligne ${i + 1}] : ${line}` : null
+        line.toLowerCase().includes(query.toLowerCase()) ? `🔎 [Ligne ${i + 1}] : ${line}` : null
       ).filter(Boolean);
 
       if (matches.length > 0) {
-        resultBox.innerText = matches.join("\n") + "\n\n✔ Copié.";
-        navigator.clipboard.writeText(matches.join("\n"));
+        const finalText = matches.join("\n");
+        resultBox.innerText = finalText + "\n\n✔ Résultat copié.";
+        resultBox.style.color = "#66ff99";
+        navigator.clipboard.writeText(finalText);
       } else {
-        resultBox.innerText = "❌ Aucun résultat.";
+        resultBox.innerText = "❌ Aucun résultat trouvé.";
+        resultBox.style.color = "#ff6666";
       }
     })
     .catch(err => {
-      resultBox.innerText = `❌ Erreur : ${err}`;
+      resultBox.innerText = `❌ Erreur de chargement : ${err}`;
+      resultBox.style.color = "#ff6666";
     });
 }
 
+// 🌍 IP Lookup
 function lookupIP() {
   const ip = document.getElementById("ipInput").value.trim();
   const box = document.getElementById("ipResult");
@@ -77,6 +84,7 @@ function lookupIP() {
     .catch(() => box.innerText = "❌ Erreur IP.");
 }
 
+// 📞 Numéro
 function lookupPhone() {
   const number = document.getElementById("numInput").value.trim();
   const box = document.getElementById("numResult");
@@ -98,6 +106,7 @@ function lookupPhone() {
     .catch(() => box.innerText = "❌ Erreur numéro.");
 }
 
+// ✉️ Email
 function lookupEmail() {
   const email = document.getElementById("emailInput").value.trim();
   const box = document.getElementById("emailResult");
@@ -116,6 +125,7 @@ function lookupEmail() {
     .catch(() => box.innerText = "❌ Erreur email.");
 }
 
+// 🏦 IBAN
 function lookupIBAN() {
   const iban = document.getElementById("ibanInput").value.trim();
   const box = document.getElementById("ibanResult");
@@ -133,6 +143,7 @@ function lookupIBAN() {
     .catch(() => box.innerText = "❌ Erreur IBAN.");
 }
 
+// 🧾 TVA
 function lookupVAT() {
   const vat = document.getElementById("vatInput").value.trim();
   const box = document.getElementById("vatResult");
@@ -150,6 +161,7 @@ function lookupVAT() {
     .catch(() => box.innerText = "❌ Erreur TVA.");
 }
 
+// 👤 Username
 function lookupUsername() {
   const username = document.getElementById("userInput").value.trim();
   const box = document.getElementById("userResult");
@@ -165,6 +177,7 @@ function lookupUsername() {
     .catch(() => box.innerText = "❌ Erreur pseudo.");
 }
 
+// 🧠 NazAPI général
 function lookupNazAPI() {
   const input = document.getElementById("nazInput").value.trim();
   const box = document.getElementById("nazResult");

@@ -84,26 +84,32 @@ function lookupIP() {
     .catch(() => box.innerText = "❌ Erreur IP.");
 }
 
-// 📞 Numéro
 function lookupPhone() {
   const number = document.getElementById("numInput").value.trim();
   const box = document.getElementById("numResult");
   if (!number) return box.innerText = "⚠️ Entrez un numéro.";
-  box.innerText = "⏳ Recherche numéro...";
-  fetch(`https://apilayer.net/api/validate?access_key=${API_KEYS.PHONE}&number=${number}`)
+  box.innerText = "⏳ Vérification en cours...";
+
+  fetch(`https://api.apilayer.com/number_verification/validate?number=${number}`, {
+    method: "GET",
+    headers: {
+      "apikey": API_KEYS.PHONE
+    }
+  })
     .then(res => res.json())
     .then(data => {
       if (data.valid) {
         box.innerText = `📞 Résultat :
+- Numéro : ${data.international_format || number}
 - Pays : ${data.country_name || "?"}
-- Code : +${data.country_code || "?"}
+- Code Pays : +${data.country_code || "?"}
 - Opérateur : ${data.carrier || "?"}
-- Type : ${data.line_type || "?"}`;
+- Ligne : ${data.line_type || "?"}`;
       } else {
         box.innerText = "❌ Numéro invalide.";
       }
     })
-    .catch(() => box.innerText = "❌ Erreur numéro.");
+    .catch(() => box.innerText = "❌ Erreur lors de la vérification.");
 }
 
 // ✉️ Email

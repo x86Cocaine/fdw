@@ -167,21 +167,57 @@ function lookupVAT() {
     .catch(() => box.innerText = "❌ Erreur TVA.");
 }
 
-// 👤 Username
 function lookupUsername() {
   const username = document.getElementById("userInput").value.trim();
   const box = document.getElementById("userResult");
   if (!username) return box.innerText = "⚠️ Entrez un pseudo.";
-  box.innerText = "⏳ Recherche pseudo...";
+  box.innerText = "⏳ Recherche en cours...";
 
-  fetch(`https://api.naz.api/usercheck?username=${username}`)
-    .then(res => res.json())
-    .then(data => {
-      box.innerText = `👤 Résultat :
-- Trouvé sur : ${data.found_sites?.join(", ") || "❌ Aucun site trouvé"}`;
-    })
-    .catch(() => box.innerText = "❌ Erreur pseudo.");
+  const sites = [
+    "https://github.com/", "https://twitter.com/", "https://instagram.com/", "https://tiktok.com/@",
+    "https://facebook.com/", "https://reddit.com/user/", "https://pinterest.com/", "https://soundcloud.com/",
+    "https://twitch.tv/", "https://medium.com/@", "https://dev.to/", "https://stackoverflow.com/users/",
+    "https://steamcommunity.com/id/", "https://disqus.com/by/", "https://about.me/", "https://behance.net/",
+    "https://bitbucket.org/", "https://buzzfeed.com/", "https://dribbble.com/", "https://flickr.com/people/",
+    "https://flipboard.com/@", "https://gab.com/", "https://goodreads.com/user/show/", "https://hackerone.com/",
+    "https://keybase.io/", "https://kongregate.com/accounts/", "https://last.fm/user/", "https://letterboxd.com/",
+    "https://mixcloud.com/", "https://ok.ru/", "https://patreon.com/", "https://producthunt.com/@",
+    "https://replit.com/@", "https://scratch.mit.edu/users/", "https://slideshare.net/", "https://snapchat.com/add/",
+    "https://spotify.com/user/", "https://tripadvisor.com/Profile/", "https://tumblr.com/", "https://vsco.co/",
+    "https://weheartit.com/", "https://youtube.com/@", "https://badoo.com/en/", "https://bandcamp.com/",
+    "https://vk.com/", "https://newgrounds.com/", "https://ello.co/", "https://imgur.com/user/"
+  ];
+
+  let found = [];
+  let checked = 0;
+  let total = sites.length;
+  box.innerText = `🔍 Test de ${total} sites...\n`;
+
+  sites.forEach(site => {
+    const url = site + username;
+    fetch("https://corsproxy.io/?" + encodeURIComponent(url), { method: "GET" })
+      .then(res => {
+        checked++;
+        if (res.status === 200) {
+          found.push(url);
+          box.innerText += `✅ Trouvé : ${url}\n`;
+        } else {
+          box.innerText += `❌ Introuvable : ${url}\n`;
+        }
+        if (checked === total) {
+          box.innerText += `\n🎯 Résultats : ${found.length}/${total} plateformes.`;
+          if (found.length > 0) {
+            navigator.clipboard.writeText(found.join("\n"));
+          }
+        }
+      })
+      .catch(() => {
+        checked++;
+        box.innerText += `❌ Erreur (CORS ?) : ${url}\n`;
+      });
+  });
 }
+
 
 // 🧠 NazAPI général
 function lookupNazAPI() {

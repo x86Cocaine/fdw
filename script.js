@@ -84,33 +84,32 @@ function lookupIP() {
     .catch(() => box.innerText = "❌ Erreur IP.");
 }
 
+// ✉️ lookphone
 function lookupPhone() {
   const number = document.getElementById("numInput").value.trim();
   const box = document.getElementById("numResult");
-  if (!number) return box.innerText = "⚠️ Entrez un numéro.";
-  box.innerText = "⏳ Vérification en cours...";
 
-  fetch(`https://api.apilayer.com/number_verification/validate?number=${number}`, {
-    method: "GET",
-    headers: {
-      "apikey": API_KEYS.PHONE
-    }
-  })
+  if (!number) return box.innerText = "⚠️ Entrez un numéro.";
+  box.innerText = "⏳ Recherche numéro...";
+
+  fetch(`https://api.numlookupapi.com/api/v1/validate/${encodeURIComponent(number)}`)
     .then(res => res.json())
     .then(data => {
       if (data.valid) {
         box.innerText = `📞 Résultat :
-- Numéro : ${data.international_format || number}
+- Valide : ✅
+- Numéro : ${data.international_format || "?"}
 - Pays : ${data.country_name || "?"}
-- Code Pays : +${data.country_code || "?"}
+- Code : ${data.country_code || "?"}
 - Opérateur : ${data.carrier || "?"}
-- Ligne : ${data.line_type || "?"}`;
+- Type : ${data.line_type || "?"}`;
       } else {
         box.innerText = "❌ Numéro invalide.";
       }
     })
-    .catch(() => box.innerText = "❌ Erreur lors de la vérification.");
+    .catch(() => box.innerText = "❌ Erreur ou quota atteint.");
 }
+
 
 // ✉️ Email
 function lookupEmail() {

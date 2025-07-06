@@ -89,28 +89,31 @@ function lookupPhone() {
   const number = document.getElementById("numInput").value.trim();
   const box = document.getElementById("numResult");
 
-  if (!number) return box.innerText = "⚠️ Entrez un numéro.";
+  if (!number) {
+    box.innerText = "⚠️ Entrez un numéro.";
+    return;
+  }
+
   box.innerText = "⏳ Recherche numéro...";
 
-  fetch(`https://api.numlookupapi.com/api/v1/validate/${encodeURIComponent(number)}`)
+  fetch(`https://veriphone.io/v2/verify?phone=${encodeURIComponent(number)}`)
     .then(res => res.json())
     .then(data => {
-      if (data.valid) {
+      if (data.phone_valid) {
         box.innerText = `📞 Résultat :
 - Valide : ✅
-- Numéro : ${data.international_format || "?"}
-- Pays : ${data.country_name || "?"}
-- Code : ${data.country_code || "?"}
+- Numéro : ${data.international_number}
+- Pays : ${data.country.name} (${data.country.code})
 - Opérateur : ${data.carrier || "?"}
-- Type : ${data.line_type || "?"}`;
+- Type : ${data.phone_type || "?"}`;
       } else {
         box.innerText = "❌ Numéro invalide.";
       }
     })
-    .catch(() => box.innerText = "❌ Erreur ou quota atteint.");
+    .catch(() => {
+      box.innerText = "❌ Erreur lors de la recherche.";
+    });
 }
-
-
 // ✉️ Email
 function lookupEmail() {
   const email = document.getElementById("emailInput").value.trim();

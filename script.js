@@ -1,4 +1,3 @@
-
 const API_KEYS = {
   IP: "57209cadb9454a5dbcb6041c93e7f99a",
   PHONE: "189ab069164d3d776aaa6b178c360425",
@@ -16,7 +15,7 @@ function closeDropdown() {
   document.getElementById("dropdownOSINT").style.display = "none";
 }
 
-document.addEventListener("click", function(e) {
+document.addEventListener("click", function (e) {
   const drop = document.getElementById("dropdownOSINT");
   const target = e.target;
   if (!target.closest(".dropdown")) {
@@ -34,14 +33,20 @@ function lookup() {
   const query = document.getElementById("search").value.trim();
   const resultBox = document.getElementById("result");
   if (!query) return resultBox.innerText = "⚠️ Merci d'entrer un terme valide.";
-  resultBox.innerText = "⏳ Recherche...";
-  fetch("100K_JOUEUR_FIVEM.txt")
-    .then(res => res.ok ? res.text() : Promise.reject("Fichier introuvable."))
-    .then(text => {
-      const lines = text.split("\n");
+  resultBox.innerText = "⏳ Chargement fichiers...";
+
+  const baseURL = window.location.pathname.includes("/fdw") ? "/fdw/" : "./";
+
+  Promise.all([
+    fetch(baseURL + "fivem_part1.txt").then(r => r.text()),
+    fetch(baseURL + "fivem_part2.txt").then(r => r.text())
+  ])
+    .then(([part1, part2]) => {
+      const lines = (part1 + "\n" + part2).split("\n");
       const matches = lines.map((line, i) =>
         line.toLowerCase().includes(query.toLowerCase()) ? `[Ligne ${i + 1}] : ${line}` : null
       ).filter(Boolean);
+
       if (matches.length > 0) {
         resultBox.innerText = matches.join("\n") + "\n\n✔ Copié.";
         navigator.clipboard.writeText(matches.join("\n"));
@@ -49,7 +54,9 @@ function lookup() {
         resultBox.innerText = "❌ Aucun résultat.";
       }
     })
-    .catch(err => resultBox.innerText = `❌ Erreur : ${err}`);
+    .catch(err => {
+      resultBox.innerText = `❌ Erreur : ${err}`;
+    });
 }
 
 function lookupIP() {
@@ -75,7 +82,7 @@ function lookupPhone() {
   const box = document.getElementById("numResult");
   if (!number) return box.innerText = "⚠️ Entrez un numéro.";
   box.innerText = "⏳ Recherche numéro...";
-  fetch(`http://apilayer.net/api/validate?access_key=${API_KEYS.PHONE}&number=${number}`)
+  fetch(`https://apilayer.net/api/validate?access_key=${API_KEYS.PHONE}&number=${number}`)
     .then(res => res.json())
     .then(data => {
       if (data.valid) {
@@ -142,13 +149,14 @@ function lookupVAT() {
     })
     .catch(() => box.innerText = "❌ Erreur TVA.");
 }
+
 function lookupUsername() {
   const username = document.getElementById("userInput").value.trim();
   const box = document.getElementById("userResult");
   if (!username) return box.innerText = "⚠️ Entrez un pseudo.";
   box.innerText = "⏳ Recherche pseudo...";
 
-  fetch(`https://api.naz.api/usercheck?username=${username}`) // à remplacer si tu as une autre API
+  fetch(`https://api.naz.api/usercheck?username=${username}`)
     .then(res => res.json())
     .then(data => {
       box.innerText = `👤 Résultat :
@@ -156,20 +164,20 @@ function lookupUsername() {
     })
     .catch(() => box.innerText = "❌ Erreur pseudo.");
 }
+
 function lookupNazAPI() {
   const input = document.getElementById("nazInput").value.trim();
   const box = document.getElementById("nazResult");
   if (!input) return box.innerText = "⚠️ Entrez une donnée.";
-
   box.innerText = "⏳ Analyse en cours...";
 
-  fetch(`https://api.naz.api/lookup?query=${encodeURIComponent(input)}`) // adapte si l’endpoint diffère
+  fetch(`https://api.naz.api/lookup?query=${encodeURIComponent(input)}`)
     .then(res => res.json())
     .then(data => {
       if (data.success) {
         box.innerText = `🧠 Résultat NazAPI :
 - Type : ${data.type || "?"}
-- Infos trouvées :\n${data.result || "Aucune"}`;
+- Résultat : ${data.result || "Aucun"}`;
       } else {
         box.innerText = "❌ Aucun résultat.";
       }

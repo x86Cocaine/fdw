@@ -10,21 +10,27 @@
 
   <div class="background"></div>
 
-  <nav class="navbar">
-    <div class="nav-item dropdown">
-      <span onclick="toggleDropdown()">🕵️ OSINT</span>
-      <div class="dropdown-content" id="dropdownOSINT">
-        <a href="#" onclick="showSection('ip'); closeDropdown()">🌐 IP Lookup</a>
-        <a href="#" onclick="showSection('num'); closeDropdown()">📞 Num Lookup</a>
-        <a href="#" onclick="showSection('email'); closeDropdown()">📧 Email Lookup</a>
-        <a href="#" onclick="showSection('iban'); closeDropdown()">🏦 IBAN Lookup</a>
-        <a href="#" onclick="showSection('vat'); closeDropdown()">🧾 TVA Lookup</a>
-      </div>
+<nav class="navbar">
+  <div class="nav-item dropdown">
+    <span onclick="toggleDropdown()">🕵️ OSINT</span>
+    <div class="dropdown-content" id="dropdownOSINT">
+      <a href="#" onclick="showSection('ip'); closeDropdown()">🌐 IP Lookup</a>
+      <a href="#" onclick="showSection('num'); closeDropdown()">📞 Num Lookup</a>
+      <a href="#" onclick="showSection('email'); closeDropdown()">📧 Email Lookup</a>
+      <a href="#" onclick="showSection('iban'); closeDropdown()">🏦 IBAN Lookup</a>
+      <a href="#" onclick="showSection('vat'); closeDropdown()">🧾 TVA Lookup</a>
+      <a href="#" onclick="showSection('user'); closeDropdown()">👤 Pseudo Lookup</a>
     </div>
-    <div class="nav-item">
-      <a href="#" onclick="showSection('fivem')">🚓 FiveM</a>
-    </div>
-  </nav>
+  </div>
+
+  <div class="nav-item">
+    <a href="#" onclick="showSection('fivem')">🚓 FiveM</a>
+  </div>
+  <div class="nav-item">
+    <a href="#" onclick="showSection('nazapi')">🧠 NazAPI</a>
+  </div>
+</nav>
+
 
   <header class="header">
     <h1>FDW <span>Lookup</span></h1>
@@ -66,6 +72,19 @@
     <button onclick="lookupVAT()">🧾 Vérifier TVA</button>
     <div id="vatResult" class="result-box">📄 En attente...</div>
   </div>
+
+  <div id="user" class="card glass section">
+    <input type="text" id="userInput" placeholder="Entrez un pseudo...">
+    <button onclick="lookupUsername()">👤 Rechercher Pseudo</button>
+    <div id="userResult" class="result-box">💻 En attente d'un pseudo...</div>
+  </div>
+
+  <div id="nazapi" class="card glass section">
+  <input type="text" id="nazInput" placeholder="Entrez une donnée (email, IP, pseudo)...">
+  <button onclick="lookupNazAPI()">🧠 Scanner avec NazAPI</button>
+  <div id="nazResult" class="result-box">🧪 En attente d'une donnée...</div>
+</div>
+
 
   <footer>
     Dév. par <strong>x86.cocaine</strong> 💊

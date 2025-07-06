@@ -96,24 +96,29 @@ function lookupPhone() {
 
   box.innerText = "⏳ Recherche numéro...";
 
-  fetch(`https://veriphone.io/v2/verify?phone=${encodeURIComponent(number)}`)
-    .then(res => res.json())
+  fetch(`https://numvalidate.com/api/validate?number=${encodeURIComponent(number)}`)
+    .then(res => {
+      if (!res.ok) throw new Error("API indisponible");
+      return res.json();
+    })
     .then(data => {
-      if (data.phone_valid) {
+      if (data.valid) {
         box.innerText = `📞 Résultat :
 - Valide : ✅
-- Numéro : ${data.international_number}
-- Pays : ${data.country.name} (${data.country.code})
-- Opérateur : ${data.carrier || "?"}
-- Type : ${data.phone_type || "?"}`;
+- Numéro (E.164) : ${data.e164Format || data.number}
+- National : ${data.internationalFormat || data.nationalFormat || "?"}
+- Pays : ${data.countryName} (${data.countryCode})
+- Indicatif : +${data.countryPrefix}`;
       } else {
         box.innerText = "❌ Numéro invalide.";
       }
     })
-    .catch(() => {
-      box.innerText = "❌ Erreur lors de la recherche.";
+    .catch(err => {
+      console.error(err);
+      box.innerText = "❌ Erreur API ou limit.";
     });
 }
+
 // ✉️ Email
 function lookupEmail() {
   const email = document.getElementById("emailInput").value.trim();
